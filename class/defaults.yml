@@ -8,7 +8,7 @@ parameters:
     namespace:
       annotations: {}
       labels: {}
-      name: syn-mimir
+      name: syn-${_instance}
 
     charts:
       mimir:

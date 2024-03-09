@@ -5,15 +5,371 @@ The parent key for all of the following parameters is `mimir`.
 == `namespace`
 
 [horizontal]
-type:: string
-default:: `syn-mimir`
+type:: dictionary
+default::
++
+[source,yaml]
+----
+namespace:
+  annotations: {}
+  labels: {}
+  name: syn-${_instance}
+----
 
 The namespace in which to deploy this component.
+
+
+== `global`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+global:
+  zoneAwareReplication: false <1>
+  nodeSelector: {} <2>
+  storageClass: '' <3>
+  objectClass: '' <4>
+----
+<1> Enable zone aware replication.
+<2> Configure node selector.
+<3> Configure `StorageClass` for `PVC`.
+<4> Configure `StorageClass` for `ObjectBucketClaim`.
+
+Global config options.
+
+
+== `s3`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+s3:
+  mode: obc <1>
+  bucket: ${_instance}-metrics-store <2>
+  endpoint: '' <3>
+  region: '' <4>
+  insecure: false <5>
+----
+<1> Bucket creation mode, currently only `obc` available.
+<2> Name of the bucket.
+<3> Configure S3 endpoint.
+<4> Configure S3 region.
+<5> Disable S3 ca verification.
+
+
+== `config`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+config:
+  tenantFederation: true <1>
+  haTracker: false <2>
+  haLabels: <3>
+    cluster: cluster_id
+    replica: prometheus_replica
+  haStore: <4>
+    type: etcd
+----
+<1> Enable tenant federation.
+<2> Enable HA deduplication.
+<3> Configure labels for HA deduplication.
+<4> Configure HA tracker store.
+
+See https://grafana.com/docs/mimir/latest/configure/configure-high-availability-deduplication/[High Availability deduplication] for reference.
+
+
+=== Example
+
+[source,yaml]
+----
+config:
+  haTracker: true
+  haStore:
+    type: etcd
+    endpoints:
+      - https://etcd-0.etcd-headless.efk-insight-etcd.svc:2379
+      - https://etcd-1.etcd-headless.efk-insight-etcd.svc:2379
+      - https://etcd-2.etcd-headless.efk-insight-etcd.svc:2379
+    tls_enabled: true
+    tls_insecure_skip_verify: true
+    username: username
+    password: password
+----
+
+
+== `ingress`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+ingress:
+  enabled: false <1>
+  tls: true <2>
+  url: mimir.local <3>
+  annotations: {} <4>
+----
+<1> Enable ingress.
+<2> Enable tls for ingress.
+<3> Configure URL for ingress.
+<4> Configure annotations for ingress.
+
+Configure components ingress.
+
+
+== `components`
+
+Component configuration.
+
+See https://github.com/grafana/mimir/blob/main/operations/helm/charts/mimir-distributed/values.yaml[Helm chart values] for reference.
+
+=== `querier`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  querier:
+    replicas: 2
+    resources: {}
+----
+
+=== `queryFrontend`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  queryFrontend:
+    replicas: 1
+    resources: {}
+----
+
+=== `storeGateway`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  storeGateway:
+    replicas: 1
+    resources: {}
+----
+
+=== `distributor`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  distributor:
+    replicas: 1
+    resources: {}
+----
+
+=== `ingester`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  ingester:
+    replicas: 3
+    resources: {}
+----
+
+=== `compactor`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  compactor:
+    replicas: 1
+    resources: {}
+----
+
+=== `gateway`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+components:
+  gateway:
+    replicas: 1
+    resources: {}
+----
+
+
+== `optional`
+
+Optional component configuration.
+
+See https://github.com/grafana/mimir/blob/main/operations/helm/charts/mimir-distributed/values.yaml[Helm chart values] for reference.
+
+=== `alertmanager`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+optional:
+  alertmanager:
+    enabled: false
+    replicas: 1
+    resources: {}
+----
+
+=== `queryScheduler`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+optional:
+  queryScheduler:
+    enabled: false
+    replicas: 2
+    resources: {}
+----
+
+=== `ruler`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+optional:
+  ruler:
+    enabled: false
+    replicas: 1
+    resources: {}
+----
+
+
+== `caches`
+
+Memcache configuration.
+
+See https://github.com/grafana/mimir/blob/main/operations/helm/charts/mimir-distributed/values.yaml[Helm chart values] for reference.
+
+=== `chunks`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+caches:
+  chunks:
+    enabled: false
+----
+
+=== `index`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+caches:
+  index:
+    enabled: false
+----
+
+=== `metadata`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+caches:
+  metadata:
+    enabled: false
+----
+
+=== `results`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+caches:
+  results:
+    enabled: false
+----
 
 
 == Example
 
 [source,yaml]
 ----
-namespace: example-namespace
+global:
+  storageClass: ceph-block
+  objectClass: ceph-bucket
+
+s3:
+  region: eu-central-2
+  endpoint: rook-ceph-rgw-ceph-objectstore.efk-storage-rook.svc
+  insecure: true
+
+config:
+  haTracker: true
+  haLabels:
+    cluster: cluster_id
+    replica: prometheus_replica
+  haStore:
+    endpoints:
+      - https://etcd-0.etcd-headless.efk-insight-etcd.svc:2379
+      - https://etcd-1.etcd-headless.efk-insight-etcd.svc:2379
+      - https://etcd-2.etcd-headless.efk-insight-etcd.svc:2379
+    tls_enabled: true
+    tls_insecure_skip_verify: true
+    username: username
+    password: password
 ----
