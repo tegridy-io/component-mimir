@@ -1,6 +1,7 @@
 parameters:
   mimir:
-    =_metadata: {}
+    =_metadata:
+      multi_instance: true
 
     # --- Component configuration ----------------------------------------------
 

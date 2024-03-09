@@ -15,7 +15,7 @@ parameters:
       - input_paths:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
-        output_path: mimir/
+        output_path: ${_instance}/
       # --- Remove
       - input_paths:
           - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/templates/minio
@@ -30,11 +30,11 @@ parameters:
         output_type: yaml
         input_paths:
           - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}
-        output_path: mimir/10_helmchart
+        output_path: ${_instance}/10_helmchart
         helm_values_files:
-          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-components.yaml
-          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-configs.yaml
-          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-overrides.yaml
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/${_instance}-components.yaml
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/${_instance}-configs.yaml
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/${_instance}-overrides.yaml
         helm_params:
           name: mimir
           namespace: ${mimir:namespace:name}
