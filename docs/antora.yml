@@ -1,0 +1,6 @@
+name: mimir
+title: Mimir Metrics Store
+version: master
+start_page: ROOT:index.adoc
+nav:
+  - modules/ROOT/partials/nav.adoc

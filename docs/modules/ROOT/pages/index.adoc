@@ -1,0 +1,5 @@
+= Mimir Metrics Store
+
+mimir is a Commodore component to manage Mimir Metrics Store.
+
+See the xref:references/parameters.adoc[parameters] reference for further details.

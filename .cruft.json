@@ -1,0 +1,25 @@
+{
+  "template": "https://github.com/projectsyn/commodore-component-template.git",
+  "commit": "705f9d2badd556f687965b8118820531b267e45c",
+  "checkout": "main",
+  "context": {
+    "cookiecutter": {
+      "name": "Mimir Metrics Store",
+      "slug": "mimir",
+      "parameter_key": "mimir",
+      "test_cases": "defaults",
+      "add_lib": "n",
+      "add_pp": "n",
+      "add_golden": "y",
+      "add_matrix": "y",
+      "add_go_unit": "n",
+      "copyright_holder": "VSHN AG <info@vshn.ch>",
+      "copyright_year": "2024",
+      "github_owner": "tegridy-io",
+      "github_name": "component-mimir",
+      "github_url": "https://github.com/tegridy-io/component-mimir",
+      "_template": "https://github.com/projectsyn/commodore-component-template.git"
+    }
+  },
+  "directory": null
+}
