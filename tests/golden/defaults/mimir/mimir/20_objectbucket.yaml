@@ -1,0 +1,12 @@
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  labels:
+    app.kubernetes.io/instance: mimir
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: mimir-metrics-store
+  name: mimir-metrics-store
+  namespace: syn-mimir
+spec:
+  bucketName: mimir-metrics-store
+  storageClassName: ''

@@ -1,5 +1,12 @@
 parameters:
   kapitan:
+    dependencies:
+      - type: helm
+        source: ${mimir:charts:mimir:source}
+        chart_name: mimir-distributed
+        version: ${mimir:charts:mimir:version}
+        output_path: ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}
+
     compile:
       - input_paths:
           - ${_base_directory}/component/app.jsonnet
@@ -9,3 +16,25 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: mimir/
+      # --- Remove
+      - input_paths:
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/templates/minio
+        input_type: remove
+        output_path: .
+      # --- Helm
+      - input_paths:
+          - ${_base_directory}/component/helm.jsonnet
+        input_type: jsonnet
+        output_path: ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/
+      - input_type: helm
+        output_type: yaml
+        input_paths:
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}
+        output_path: mimir/10_helmchart
+        helm_values_files:
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-components.yaml
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-configs.yaml
+          - ${_base_directory}/helmcharts/mimir/${mimir:charts:mimir:version}/values-overrides.yaml
+        helm_params:
+          name: mimir
+          namespace: ${mimir:namespace:name}

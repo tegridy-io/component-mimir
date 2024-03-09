@@ -1,4 +1,119 @@
 parameters:
   mimir:
     =_metadata: {}
-    namespace: syn-mimir
+
+    # --- Component configuration ----------------------------------------------
+
+    namespace:
+      annotations: {}
+      labels: {}
+      name: syn-mimir
+
+    charts:
+      mimir:
+        source: https://grafana.github.io/helm-charts
+        version: 4.3.0
+
+    global:
+      zoneAwareReplication: false
+      nodeSelector: {}
+      storageClass: ''
+      objectClass: ''
+
+    s3:
+      mode: obc
+      bucket: ${_instance}-metrics-store
+      endpoint: ''
+      region: ''
+      insecure: false
+
+    config:
+      tenantFederation: true
+      haTracker: false
+      haLabels:
+        cluster: cluster_id
+        replica: prometheus_replica
+      haStore:
+        type: etcd
+
+    ingress:
+      enabled: false
+      tls: true
+      url: mimir.local
+      annotations: {}
+      # ?{vaultkv:__shared__/__shared__/insights/mimir}
+
+    monitoring:
+      serviceMonitor:
+        enabled: false
+      prometheusRule:
+        enabled: false
+        mimirAlerts: false
+        mimirRules: false
+      grafanaAgent:
+        enabled: false
+
+    # ------ Subcomponents -----------------------------------------------------
+
+    components:
+      querier:
+        replicas: 2
+        resources: {}
+      queryFrontend:
+        replicas: 1
+        resources: {}
+      storeGateway:
+        replicas: 1
+        resources: {}
+
+      distributor:
+        replicas: 1
+        resources: {}
+      ingester:
+        replicas: 3
+        resources: {}
+
+      compactor:
+        replicas: 1
+        resources: {}
+
+      gateway:
+        replicas: 1
+        resources: {}
+
+    optional:
+      alertmanager:
+        enabled: false
+        replicas: 1
+        resources: {}
+      queryScheduler:
+        enabled: false
+        replicas: 2
+        resources: {}
+      ruler:
+        enabled: false
+        replicas: 1
+        resources: {}
+
+    caches:
+      chunks:
+        enabled: false
+      index:
+        enabled: false
+      metadata:
+        enabled: false
+      results:
+        enabled: false
+
+    # --- Helm configuration ---------------------------------------------------
+
+    helmValues:
+      fullnameOverride: ${_instance}
+      overrides_exporter:
+        enabled: false
+      minio:
+        enabled: false
+      rollout-operator:
+        enabled: false
+      nginx:
+        enabled: false

@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/instance: mimir
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/version: 2.7.1
+    helm.sh/chart: mimir-distributed-4.3.0
+  name: mimir-query-frontend
+  namespace: syn-mimir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: query-frontend
+      app.kubernetes.io/instance: mimir
+      app.kubernetes.io/name: mimir
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 1d8773dc6b7013a4691a90a72159dfcf0bda846715674cd19b19ec0cd79aa8ee
+      labels:
+        app.kubernetes.io/component: query-frontend
+        app.kubernetes.io/instance: mimir
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: mimir
+        app.kubernetes.io/version: 2.7.1
+        helm.sh/chart: mimir-distributed-4.3.0
+      namespace: syn-mimir
+    spec:
+      affinity: {}
+      containers:
+        - args:
+            - -target=query-frontend
+            - -config.expand-env=true
+            - -config.file=/etc/mimir/mimir.yaml
+          env: null
+          envFrom:
+            - secretRef:
+                name: mimir-metrics-store
+          image: grafana/mimir:2.7.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe: null
+          name: query-frontend
+          ports:
+            - containerPort: 8080
+              name: http-metrics
+              protocol: TCP
+            - containerPort: 9095
+              name: grpc
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /var/mimir
+              name: runtime-config
+            - mountPath: /etc/mimir
+              name: config
+            - mountPath: /data
+              name: storage
+            - mountPath: /active-query-tracker
+              name: active-queries
+      initContainers: []
+      nodeSelector: {}
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: mimir
+      terminationGracePeriodSeconds: 180
+      tolerations: []
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: query-frontend
+              app.kubernetes.io/instance: mimir
+              app.kubernetes.io/name: mimir
+          maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+      volumes:
+        - configMap:
+            items:
+              - key: mimir.yaml
+                path: mimir.yaml
+            name: mimir-config
+          name: config
+        - configMap:
+            name: mimir-runtime
+          name: runtime-config
+        - emptyDir: {}
+          name: storage
+        - emptyDir: {}
+          name: active-queries

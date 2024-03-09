@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/instance: mimir
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/version: 2.7.1
+    helm.sh/chart: mimir-distributed-4.3.0
+  name: mimir-gateway
+  namespace: syn-mimir
+spec:
+  rules:
+    - host: mimir.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: mimir-gateway
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - mimir.local
+      secretName: mimir-gateway-tls

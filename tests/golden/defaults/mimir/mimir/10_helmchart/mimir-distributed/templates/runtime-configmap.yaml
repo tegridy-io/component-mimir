@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  runtime.yaml: |2
+
+    {}
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: mimir
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/version: 2.7.1
+    helm.sh/chart: mimir-distributed-4.3.0
+  name: mimir-runtime
+  namespace: syn-mimir
