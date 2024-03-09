@@ -1,13 +1,14 @@
 parameters:
   mimir:
-    =_metadata: {}
+    =_metadata:
+      multi_instance: true
 
     # --- Component configuration ----------------------------------------------
 
     namespace:
       annotations: {}
       labels: {}
-      name: syn-mimir
+      name: syn-${_instance}
 
     charts:
       mimir:

@@ -223,7 +223,7 @@ local mimir = {
 // local configs = if params.s3.shared_bucket then configsSharedBucket else configsSingleBucket;
 
 {
-  'values-components': components + optional + caches,
-  'values-configs': mimir + bucket + haTracker,
-  'values-overrides': params.helmValues,
+  ['%s-components' % inv.parameters._instance]: components + optional + caches,
+  ['%s-configs' % inv.parameters._instance]: mimir + bucket + haTracker,
+  ['%s-overrides' % inv.parameters._instance]: params.helmValues,
 }
