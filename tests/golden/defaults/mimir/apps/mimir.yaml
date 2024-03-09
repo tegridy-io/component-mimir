@@ -1,0 +1,10 @@
+spec:
+  ignoreDifferences:
+    - group: apps
+      jsonPointers:
+        - /spec/volumeClaimTemplates/0/apiVersion
+        - /spec/volumeClaimTemplates/0/kind
+      kind: StatefulSet
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true

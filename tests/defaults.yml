@@ -1,3 +1,7 @@
-# Overwrite parameters here
+parameters:
+  mimir:
+    config:
+      haTracker: true
 
-# parameters: {...}
+    ingress:
+      enabled: true

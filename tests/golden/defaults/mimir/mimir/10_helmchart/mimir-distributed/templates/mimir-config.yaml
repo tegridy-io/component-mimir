@@ -1,0 +1,107 @@
+apiVersion: v1
+data:
+  mimir.yaml: |2
+
+    activity_tracker:
+      filepath: /active-query-tracker/activity.log
+    alertmanager:
+      data_dir: /data
+      enable_api: true
+      external_url: /alertmanager
+      fallback_config_file: /configs/alertmanager_fallback_config.yaml
+    blocks_storage:
+      backend: s3
+      bucket_store:
+        max_chunk_pool_bytes: 12884901888
+        sync_dir: /data/tsdb-sync
+      tsdb:
+        dir: /data/tsdb
+    common:
+      storage:
+        backend: s3
+        s3:
+          access_key_id: ${AWS_ACCESS_KEY_ID}
+          bucket_name: mimir-metrics-store
+          endpoint: ""
+          insecure: false
+          region: ""
+          secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+    compactor:
+      compaction_interval: 30m
+      data_dir: /data
+      deletion_delay: 2h
+      max_closing_blocks_concurrency: 2
+      max_opening_blocks_concurrency: 4
+      sharding_ring:
+        wait_stability_min_duration: 1m
+      symbols_flushers_concurrency: 4
+    distributor:
+      ha_tracker:
+        enable_ha_tracker: true
+        ha_tracker_failover_timeout: 60s
+        kvstore:
+          etcd: {}
+          store: etcd
+    frontend:
+      parallelize_shardable_queries: true
+    frontend_worker:
+      frontend_address: mimir-query-frontend-headless.syn-mimir.svc:9095
+      grpc_client_config:
+        max_send_msg_size: 419430400
+    ingester:
+      ring:
+        final_sleep: 0s
+        num_tokens: 512
+        tokens_file_path: /data/tokens
+        unregister_on_shutdown: false
+    ingester_client:
+      grpc_client_config:
+        max_recv_msg_size: 104857600
+        max_send_msg_size: 104857600
+    limits:
+      accept_ha_samples: true
+      ha_cluster_label: cluster_id
+      ha_replica_label: prometheus_replica
+      max_cache_freshness: 10m
+      max_query_parallelism: 240
+      max_total_query_length: 12000h
+    memberlist:
+      abort_if_cluster_join_fails: false
+      compression_enabled: false
+      join_members:
+      - dns+mimir-gossip-ring.syn-mimir.svc.cluster.local:7946
+    querier:
+      max_concurrent: 16
+    query_scheduler:
+      max_outstanding_requests_per_tenant: 800
+    ruler:
+      alertmanager_url: dnssrvnoa+http://_http-metrics._tcp.mimir-alertmanager-headless.syn-mimir.svc.cluster.local/alertmanager
+      enable_api: true
+      rule_path: /data
+      tenant_federation:
+        enabled: true
+    runtime_config:
+      file: /var/mimir/runtime.yaml
+    server:
+      grpc_server_max_concurrent_streams: 1000
+      grpc_server_max_connection_age: 2m
+      grpc_server_max_connection_age_grace: 5m
+      grpc_server_max_connection_idle: 1m
+    store_gateway:
+      sharding_ring:
+        tokens_file_path: /data/tokens
+        wait_stability_min_duration: 1m
+    tenant_federation:
+      enabled: true
+    usage_stats:
+      installation_mode: helm
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: mimir
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/version: 2.7.1
+    helm.sh/chart: mimir-distributed-4.3.0
+  name: mimir-config
+  namespace: syn-mimir
