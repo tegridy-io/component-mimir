@@ -30,11 +30,12 @@ parameters:
 
     config:
       tenantFederation: true
+      externalRing: false
       haTracker: false
       haLabels:
-        cluster: cluster_id
-        replica: prometheus_replica
-      haStore:
+        cluster: cluster
+        replica: __replica__
+      kvStore:
         type: etcd
 
     ingress:
