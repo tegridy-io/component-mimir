@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: ef3af81aa8cf9c31ea64b1fce466d5f0e6c386a0f49fd89502c8df362ef48e86
+        checksum/config: 5772a182c1b2940191f76c50e652602b540542114268b23edfb65f77649f3e0f
       labels:
         app.kubernetes.io/component: distributor
         app.kubernetes.io/instance: mimir
