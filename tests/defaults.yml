@@ -2,6 +2,8 @@ parameters:
   mimir:
     config:
       haTracker: true
+      haStore:
+        some: param
 
     ingress:
       enabled: true

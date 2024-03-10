@@ -143,31 +143,34 @@ else
   {};
 
 // HA Tracker
-local haTracker = com.makeMergeable({
-  mimir: {
-    structuredConfig+: {
-      limits: {
-        accept_ha_samples: true,
-        ha_cluster_label: params.config.haLabels.cluster,
-        ha_replica_label: params.config.haLabels.replica,
-      },
-      distributor: {
-        ha_tracker: {
-          enable_ha_tracker: true,
-          ha_tracker_failover_timeout: '60s',
-          kvstore: {
-            store: params.config.haStore.type,
-            [params.config.haStore.type]: {
-              [obj]: params.config.haStore[obj]
-              for obj in std.objectFields(params.config.haStore)
-              if obj != 'type'
+local haTracker = if params.config.haTracker then
+  com.makeMergeable({
+    mimir: {
+      structuredConfig+: {
+        limits: {
+          accept_ha_samples: true,
+          ha_cluster_label: params.config.haLabels.cluster,
+          ha_replica_label: params.config.haLabels.replica,
+        },
+        distributor: {
+          ha_tracker: {
+            enable_ha_tracker: true,
+            ha_tracker_failover_timeout: '60s',
+            kvstore: {
+              store: params.config.haStore.type,
+              [params.config.haStore.type]: {
+                [obj]: params.config.haStore[obj]
+                for obj in std.objectFields(params.config.haStore)
+                if obj != 'type'
+              },
             },
           },
         },
       },
     },
-  },
-});
+  })
+else
+  {};
 
 // Mimir Config
 local mimir = {
