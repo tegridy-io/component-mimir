@@ -40,7 +40,8 @@ data:
         enable_ha_tracker: true
         ha_tracker_failover_timeout: 60s
         kvstore:
-          etcd: {}
+          etcd:
+            some: param
           store: etcd
     frontend:
       parallelize_shardable_queries: true
