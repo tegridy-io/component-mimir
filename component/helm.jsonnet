@@ -157,6 +157,7 @@ local haTracker = if params.config.haTracker then
             enable_ha_tracker: true,
             ha_tracker_failover_timeout: '60s',
             kvstore: {
+              prefix: '%s/' % inv.parameters._instance,
               store: params.config.haStore.type,
               [params.config.haStore.type]: {
                 [obj]: params.config.haStore[obj]

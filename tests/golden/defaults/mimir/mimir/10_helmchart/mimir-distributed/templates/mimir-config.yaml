@@ -42,6 +42,7 @@ data:
         kvstore:
           etcd:
             some: param
+          prefix: mimir/
           store: etcd
     frontend:
       parallelize_shardable_queries: true
