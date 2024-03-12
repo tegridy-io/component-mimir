@@ -35,6 +35,11 @@ data:
       max_closing_blocks_concurrency: 2
       max_opening_blocks_concurrency: 4
       sharding_ring:
+        kvstore:
+          etcd:
+            some: param
+          prefix: mimir-collectors/
+          store: etcd
         wait_stability_min_duration: 1m
       symbols_flushers_concurrency: 4
     distributor:
@@ -44,7 +49,13 @@ data:
         kvstore:
           etcd:
             some: param
-          prefix: mimir/
+          prefix: mimir-hatracker/
+          store: etcd
+      ring:
+        kvstore:
+          etcd:
+            some: param
+          prefix: mimir-collectors/
           store: etcd
     frontend:
       parallelize_shardable_queries: true
@@ -55,6 +66,11 @@ data:
     ingester:
       ring:
         final_sleep: 0s
+        kvstore:
+          etcd:
+            some: param
+          prefix: mimir-collectors/
+          store: etcd
         num_tokens: 512
         tokens_file_path: /data/tokens
         unregister_on_shutdown: false
@@ -64,8 +80,8 @@ data:
         max_send_msg_size: 104857600
     limits:
       accept_ha_samples: true
-      ha_cluster_label: cluster_id
-      ha_replica_label: prometheus_replica
+      ha_cluster_label: cluster
+      ha_replica_label: __replica__
       max_cache_freshness: 10m
       max_query_parallelism: 240
       max_total_query_length: 12000h
@@ -92,6 +108,11 @@ data:
       grpc_server_max_connection_idle: 1m
     store_gateway:
       sharding_ring:
+        kvstore:
+          etcd:
+            some: param
+          prefix: mimir-collectors/
+          store: etcd
         tokens_file_path: /data/tokens
         unregister_on_shutdown: false
         wait_stability_min_duration: 1m

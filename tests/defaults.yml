@@ -2,7 +2,8 @@ parameters:
   mimir:
     config:
       haTracker: true
-      haStore:
+      externalRing: true
+      kvStore:
         some: param
 
     ingress:

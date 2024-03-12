@@ -142,7 +142,16 @@ local bucket = if params.s3.mode == 'obc' then
 else
   {};
 
-// HA Tracker
+// KV Store
+local kvStore = com.makeMergeable({
+  store: params.config.kvStore.type,
+  [params.config.kvStore.type]: {
+    [obj]: params.config.kvStore[obj]
+    for obj in std.objectFields(params.config.kvStore)
+    if obj != 'type'
+  },
+});
+
 local haTracker = if params.config.haTracker then
   com.makeMergeable({
     mimir: {
@@ -157,14 +166,46 @@ local haTracker = if params.config.haTracker then
             enable_ha_tracker: true,
             ha_tracker_failover_timeout: '60s',
             kvstore: {
-              prefix: '%s/' % inv.parameters._instance,
-              store: params.config.haStore.type,
-              [params.config.haStore.type]: {
-                [obj]: params.config.haStore[obj]
-                for obj in std.objectFields(params.config.haStore)
-                if obj != 'type'
-              },
-            },
+              prefix: '%s-hatracker/' % inv.parameters._instance,
+            } + kvStore,
+          },
+        },
+      },
+    },
+  })
+else
+  {};
+
+local externalRing = if params.config.externalRing then
+  com.makeMergeable({
+    mimir: {
+      structuredConfig+: {
+        distributor: {
+          ring: {
+            kvstore: {
+              prefix: '%s-collectors/' % inv.parameters._instance,
+            } + kvStore,
+          },
+        },
+        ingester: {
+          ring: {
+            kvstore: {
+              prefix: '%s-collectors/' % inv.parameters._instance,
+            } + kvStore,
+          },
+        },
+        compactor: {
+          sharding_ring: {
+            kvstore: {
+              prefix: '%s-collectors/' % inv.parameters._instance,
+            } + kvStore,
+          },
+        },
+        store_gateway: {
+          sharding_ring: {
+            kvstore: {
+              prefix: '%s-collectors/' % inv.parameters._instance,
+            } + kvStore,
           },
         },
       },
@@ -228,6 +269,6 @@ local mimir = {
 
 {
   ['%s-components' % inv.parameters._instance]: components + optional + caches,
-  ['%s-configs' % inv.parameters._instance]: mimir + bucket + haTracker,
+  ['%s-configs' % inv.parameters._instance]: mimir + bucket + haTracker + externalRing,
   ['%s-overrides' % inv.parameters._instance]: params.helmValues,
 }
