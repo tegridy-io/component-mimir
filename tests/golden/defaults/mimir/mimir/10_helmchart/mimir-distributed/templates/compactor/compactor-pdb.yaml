@@ -2,18 +2,18 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   labels:
-    app.kubernetes.io/component: ingester
+    app.kubernetes.io/component: compactor
     app.kubernetes.io/instance: mimir
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mimir
     app.kubernetes.io/version: 2.11.0
     helm.sh/chart: mimir-distributed-5.2.2
-  name: mimir-ingester
+  name: mimir-compactor
   namespace: syn-mimir
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: ingester
+      app.kubernetes.io/component: compactor
       app.kubernetes.io/instance: mimir
       app.kubernetes.io/name: mimir
