@@ -6,14 +6,15 @@ metadata:
     app.kubernetes.io/instance: mimir
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mimir
-    app.kubernetes.io/version: 2.7.1
-    helm.sh/chart: mimir-distributed-4.3.0
+    app.kubernetes.io/version: 2.11.0
+    helm.sh/chart: mimir-distributed-5.2.2
   name: mimir-gossip-ring
   namespace: syn-mimir
 spec:
   clusterIP: None
   ports:
-    - name: gossip-ring
+    - appProtocol: tcp
+      name: gossip-ring
       port: 7946
       protocol: TCP
       targetPort: 7946

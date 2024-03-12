@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: mimir
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mimir
-    app.kubernetes.io/version: 2.7.1
-    helm.sh/chart: mimir-distributed-4.3.0
+    app.kubernetes.io/version: 2.11.0
+    helm.sh/chart: mimir-distributed-5.2.2
   name: mimir-gateway
   namespace: syn-mimir
 spec:
@@ -19,18 +19,21 @@ spec:
       app.kubernetes.io/instance: mimir
       app.kubernetes.io/name: mimir
   strategy:
+    rollingUpdate:
+      maxSurge: 15%
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
       annotations:
-        checksum/config: b5035748fad95224d41a0b621bf5e65bd3ab3c90146f2f74e504916756d1cf9b
+        checksum/config: 2fb0d12defde275c13dc551acac77dd2434a82fea1f7db78d2da3d12c26c25a9
       labels:
         app.kubernetes.io/component: gateway
         app.kubernetes.io/instance: mimir
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mimir
-        app.kubernetes.io/version: 2.7.1
-        helm.sh/chart: mimir-distributed-4.3.0
+        app.kubernetes.io/version: 2.11.0
+        helm.sh/chart: mimir-distributed-5.2.2
       namespace: syn-mimir
     spec:
       affinity: {}
@@ -40,7 +43,7 @@ spec:
           envFrom:
             - secretRef:
                 name: mimir-metrics-store
-          image: docker.io/nginxinc/nginx-unprivileged:1.22-alpine
+          image: docker.io/nginxinc/nginx-unprivileged:1.25-alpine
           imagePullPolicy: IfNotPresent
           name: nginx
           ports:

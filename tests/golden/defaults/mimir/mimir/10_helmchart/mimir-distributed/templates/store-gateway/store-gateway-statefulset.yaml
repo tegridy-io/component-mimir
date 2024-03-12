@@ -8,11 +8,12 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mimir
     app.kubernetes.io/part-of: memberlist
-    app.kubernetes.io/version: 2.7.1
-    helm.sh/chart: mimir-distributed-4.3.0
+    app.kubernetes.io/version: 2.11.0
+    helm.sh/chart: mimir-distributed-5.2.2
   name: mimir-store-gateway
   namespace: syn-mimir
 spec:
+  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
@@ -23,15 +24,15 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 5772a182c1b2940191f76c50e652602b540542114268b23edfb65f77649f3e0f
+        checksum/config: 7f3b4d98482df5a94a4e1670b78ef7935210dadacc04f0acd23b83d344952ddd
       labels:
         app.kubernetes.io/component: store-gateway
         app.kubernetes.io/instance: mimir
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mimir
         app.kubernetes.io/part-of: memberlist
-        app.kubernetes.io/version: 2.7.1
-        helm.sh/chart: mimir-distributed-4.3.0
+        app.kubernetes.io/version: 2.11.0
+        helm.sh/chart: mimir-distributed-5.2.2
       namespace: syn-mimir
     spec:
       affinity: {}
@@ -40,11 +41,15 @@ spec:
             - -target=store-gateway
             - -config.expand-env=true
             - -config.file=/etc/mimir/mimir.yaml
-          env: null
+          env:
+            - name: GOMAXPROCS
+              value: '5'
+            - name: GOMEMLIMIT
+              value: '536870912'
           envFrom:
             - secretRef:
                 name: mimir-metrics-store
-          image: grafana/mimir:2.7.1
+          image: grafana/mimir:2.11.0
           imagePullPolicy: IfNotPresent
           livenessProbe: null
           name: store-gateway

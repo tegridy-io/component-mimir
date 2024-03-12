@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mimir
     app.kubernetes.io/part-of: memberlist
-    app.kubernetes.io/version: 2.7.1
-    helm.sh/chart: mimir-distributed-4.3.0
+    app.kubernetes.io/version: 2.11.0
+    helm.sh/chart: mimir-distributed-5.2.2
   name: mimir-ingester
   namespace: syn-mimir
 spec:
@@ -24,15 +24,15 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 5772a182c1b2940191f76c50e652602b540542114268b23edfb65f77649f3e0f
+        checksum/config: 7f3b4d98482df5a94a4e1670b78ef7935210dadacc04f0acd23b83d344952ddd
       labels:
         app.kubernetes.io/component: ingester
         app.kubernetes.io/instance: mimir
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mimir
         app.kubernetes.io/part-of: memberlist
-        app.kubernetes.io/version: 2.7.1
-        helm.sh/chart: mimir-distributed-4.3.0
+        app.kubernetes.io/version: 2.11.0
+        helm.sh/chart: mimir-distributed-5.2.2
       namespace: syn-mimir
     spec:
       affinity: {}
@@ -42,11 +42,12 @@ spec:
             - -config.expand-env=true
             - -config.file=/etc/mimir/mimir.yaml
             - -ingester.ring.instance-availability-zone=zone-default
+            - -server.grpc-max-concurrent-streams=500
           env: null
           envFrom:
             - secretRef:
                 name: mimir-metrics-store
-          image: grafana/mimir:2.7.1
+          image: grafana/mimir:2.11.0
           imagePullPolicy: IfNotPresent
           livenessProbe: null
           name: ingester
